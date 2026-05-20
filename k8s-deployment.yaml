@@ -1,0 +1,18 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: toy-app-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: toy-app
+  template:
+    metadata:
+      labels:
+        app: toy-app
+    spec:
+      containers:
+      - name: toy-container
+        # This tells Kubernetes to look for your packaged app
+        image: toy-cicd-app:latest
