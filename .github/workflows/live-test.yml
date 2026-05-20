@@ -1,0 +1,38 @@
+name: Live Python CI Pipeline
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. Pull down your repository files onto GitHub's cloud runner machine
+      - name: Fetch Codebase
+        uses: actions/checkout@v4
+
+      # 2. Set up a real Python environment on GitHub's server
+      - name: Initialize Python Environment
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      # 3. Execute your package.json script which triggers 'python3 test.py'
+      - name: Run Real Python Test Suite
+        run: npm test
+
+      # 4. Construct your Docker container image for real
+      - name: Build Actual Docker Image
+        run: docker build -t toy-cicd-app:${{ github.sha }} .
+
+      # 5. Use an open-source tool to scan your Kubernetes file for layout bugs
+      - name: Validate Kubernetes Manifest Structure
+        uses: stephansturges/kube-linter-action@v1.1.0
+        with:
+          id: kube-lint
+          directory: .
+          file: k8s-deployment.yaml
